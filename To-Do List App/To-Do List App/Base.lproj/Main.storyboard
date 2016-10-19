@@ -139,7 +139,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hqn-b6-chQ">
-                                                    <frame key="frameInset" minX="-35" minY="-7" width="432" height="50"/>
+                                                    <frame key="frameInset" minY="-7" width="65" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <connections>
                                                         <action selector="markAsComplete:" destination="J4c-xB-Ess" eventType="touchUpInside" id="Xdf-9Z-kmG"/>

@@ -27,16 +27,16 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         if !checked[indexPath.row] {
             cell.imageView?.image = UIImage(named: "notchecked")
+            cell.textLabel?.textColor = UIColor.black
         } else if checked[indexPath.row] {
             cell.imageView?.image = UIImage(named: "check")
+            cell.textLabel?.textColor = UIColor.gray
         }
         
         cell.cellButton.tag = indexPath.row
         cell.cellButton.addTarget(self, action: #selector(ListViewController.markAsComplete(_:)), for: .touchUpInside)
         cell.selectionStyle = UITableViewCellSelectionStyle.none
-
-
-
+        
         return cell
     }
     
