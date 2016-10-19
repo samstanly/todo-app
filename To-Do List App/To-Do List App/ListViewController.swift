@@ -14,15 +14,41 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var listArray:[String] = []
     
+    var checked:[Bool] = []
+
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listArray.count
     }
     
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Cell")
+        let cell = self.table.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TableViewCell
+
         cell.textLabel?.text = listArray[indexPath.row]
+        
+        if !checked[indexPath.row] {
+            cell.imageView?.image = UIImage(named: "notchecked")
+        } else if checked[indexPath.row] {
+            cell.imageView?.image = UIImage(named: "check")
+        }
+        
+        cell.cellButton.tag = indexPath.row
+        cell.cellButton.addTarget(self, action: #selector(ListViewController.markAsComplete(_:)), for: .touchUpInside)
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+
+
+
         return cell
     }
+    
+    @IBAction func markAsComplete(_ sender: UIButton) {
+        checked[sender.tag] = !checked[sender.tag]
+        print(checked[sender.tag])
+        UserDefaults.standard.set(checked, forKey: "checked")
+        table.reloadData()
+        viewWillAppear(true)
+        
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,17 +56,23 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        print("APPPPEARRR")
         let foundArray = UserDefaults.standard.object(forKey: "list")
+        let foundChecked = UserDefaults.standard.object(forKey: "checked")
         if let tempList = foundArray as? [String] {
             listArray = tempList
         }
+        
+        if let tempChecked = foundChecked as? [Bool] {
+            checked = tempChecked
+        }
+        
         table.reloadData()
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
             listArray.remove(at: indexPath.row)
+            checked.remove(at: indexPath.row)
             table.reloadData()
             UserDefaults.standard.set(listArray, forKey: "list")
         }

@@ -10,10 +10,33 @@ import UIKit
 
 class HistoryViewController: UIViewController {
 
+    @IBOutlet weak var historyTable: UITableView!
+    
+    var listArray:[String] = []
+    
+    internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return listArray.count
+    }
+    
+    internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Cell")
+        cell.textLabel?.text = listArray[indexPath.row]
+        return cell
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        let foundArray = UserDefaults.standard.object(forKey: "list")
+        if let tempList = foundArray as? [String] {
+            listArray = tempList
+        }
+        historyTable.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
