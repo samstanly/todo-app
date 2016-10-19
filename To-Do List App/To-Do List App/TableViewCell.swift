@@ -12,6 +12,7 @@ class TableViewCell: UITableViewCell {
     
     @IBOutlet weak var cellButton: UIButton!
     
+    @IBOutlet weak var restoreButton: UIButton!
 
     override func awakeFromNib() {
         super.awakeFromNib()

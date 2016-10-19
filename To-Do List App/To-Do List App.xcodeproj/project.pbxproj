@@ -31,7 +31,7 @@
 		22F59B4F1DB6D877000A6ACE /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		22F59B511DB7018B000A6ACE /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		22F59B551DB714E2000A6ACE /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
-		22F59B571DB7152E000A6ACE /* notchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notchecked.png; sourceTree = "<group>"; };
+		22F59B571DB7152E000A6ACE /* notchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = notchecked.png; path = "To-Do List App/notchecked.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +50,7 @@
 			children = (
 				228639B21DB69FE100EB9598 /* To-Do List App */,
 				228639B11DB69FE100EB9598 /* Products */,
+				22F59B571DB7152E000A6ACE /* notchecked.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,7 +70,6 @@
 				22F59B4F1DB6D877000A6ACE /* HistoryViewController.swift */,
 				22F59B4D1DB6CE55000A6ACE /* ListViewController.swift */,
 				22F59B511DB7018B000A6ACE /* TableViewCell.swift */,
-				22F59B571DB7152E000A6ACE /* notchecked.png */,
 				22F59B551DB714E2000A6ACE /* check.png */,
 				228639B71DB69FE100EB9598 /* Main.storyboard */,
 				228639BA1DB69FE100EB9598 /* Assets.xcassets */,

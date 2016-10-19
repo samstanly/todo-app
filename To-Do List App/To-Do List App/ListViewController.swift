@@ -71,11 +71,36 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
+            
+            let foundDeleted = UserDefaults.standard.object(forKey: "deleted")
+            var deletedList = [String]()
+            if let tempDeleted = foundDeleted as? [String] {
+                deletedList = tempDeleted
+                deletedList.append(listArray[indexPath.row])
+            } else {
+                deletedList = [listArray[indexPath.row]]
+            }
+            
+            let foundDeletedStatus = UserDefaults.standard.object(forKey: "deletedStatus")
+            var deletedStatus = [Bool]()
+            if let tempDeletedStatus = foundDeletedStatus as? [Bool] {
+                deletedStatus = tempDeletedStatus
+                deletedStatus.append(checked[indexPath.row])
+            } else {
+                deletedStatus = [checked[indexPath.row]]
+            }
+            
+            UserDefaults.standard.set(deletedList, forKey: "deleted")
+            UserDefaults.standard.set(deletedStatus, forKey: "deletedStatus")
+
+            
             listArray.remove(at: indexPath.row)
             checked.remove(at: indexPath.row)
-            table.reloadData()
             UserDefaults.standard.set(listArray, forKey: "list")
+            
+            table.reloadData()
         }
+
     }
     
     override func didReceiveMemoryWarning() {

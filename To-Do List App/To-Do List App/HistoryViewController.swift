@@ -8,37 +8,100 @@
 
 import UIKit
 
-class HistoryViewController: UIViewController {
+class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    @IBAction func restoreItem(_ sender: UIButton) {
+        let foundActiveList = UserDefaults.standard.object(forKey: "list")
+        var activeList = [String]()
+        if let tempActiveList = foundActiveList as? [String] {
+            activeList = tempActiveList
+            activeList.append(listArray[sender.tag])
+        } else {
+            activeList = [listArray[sender.tag]]
+        }
+        
+        let foundActiveStatus = UserDefaults.standard.object(forKey: "checked")
+        var checkedActive = [Bool]()
+        if let tempCheckedActive = foundActiveStatus as? [Bool] {
+            checkedActive = tempCheckedActive
+            checkedActive.append(checked[sender.tag])
+        } else {
+            checkedActive = [checked[sender.tag]]
+        }
+        
+        UserDefaults.standard.set(activeList, forKey: "list")
+        UserDefaults.standard.set(checkedActive, forKey: "checked")
+        
+        
+        listArray.remove(at: sender.tag)
+        checked.remove(at: sender.tag)
+        
+        UserDefaults.standard.set(listArray, forKey: "deleted")
+        UserDefaults.standard.set(checked, forKey: "deletedStatus")
+        
+        historyTable.reloadData()
+        
+    }
 
     @IBOutlet weak var historyTable: UITableView!
     
     var listArray:[String] = []
     
+    var checked:[Bool] = []
+    
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("CHECKING COUNT")
         return listArray.count
     }
     
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Cell")
+        print("making cell")
+        let cell = self.historyTable.dequeueReusableCell(withIdentifier: "CellDeleted", for: indexPath) as! TableViewCell
+        
         cell.textLabel?.text = listArray[indexPath.row]
+        cell.textLabel?.backgroundColor = UIColor.clear
+        
+        if !checked[indexPath.row] {
+            cell.imageView?.image = UIImage(named: "notchecked")
+            cell.textLabel?.textColor = UIColor.black
+        } else if checked[indexPath.row] {
+            cell.imageView?.image = UIImage(named: "check")
+            cell.textLabel?.textColor = UIColor.gray
+        }
+        
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        cell.restoreButton?.tag = indexPath.row
+        cell.restoreButton?.addTarget(self, action: #selector(HistoryViewController.restoreItem(_:)), for: .touchUpInside)
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        
         return cell
     }
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let foundArray = UserDefaults.standard.object(forKey: "list")
+        let foundArray = UserDefaults.standard.object(forKey: "deleted")
+        let foundChecked = UserDefaults.standard.object(forKey: "deletedStatus")
         if let tempList = foundArray as? [String] {
             listArray = tempList
         }
+        
+        if let tempChecked = foundChecked as? [Bool] {
+            checked = tempChecked
+        }
+        
+        print(listArray)
+        
         historyTable.reloadData()
     }
-
+    
+    
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
