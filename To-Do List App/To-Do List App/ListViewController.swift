@@ -4,12 +4,23 @@
 //
 //  Created by Sam Steady on 10/18/16.
 //  Copyright © 2016 Sam Steady. All rights reserved.
+
+//func resetChecks() {
+//    for i in 0.. < tableView.numberOfSections {
+//        for j in 0.. < tableView.numberOfRowsInSection(i) {
+//            if let cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: j, inSection: i)) {
+//                cell.accessoryType = .None
+//            }
+//        }
+//    }
+//}
 //
 
 import UIKit
 
 class ListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    @IBOutlet weak var deleteButton: UIBarButtonItem!
     @IBOutlet weak var table: UITableView!
     
     var listArray:[String] = []
@@ -19,6 +30,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listArray.count
     }
+
     
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.table.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TableViewCell
@@ -28,6 +40,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         if !checked[indexPath.row] {
             cell.imageView?.image = UIImage(named: "notchecked")
             cell.textLabel?.textColor = UIColor.black
+            
         } else if checked[indexPath.row] {
             cell.imageView?.image = UIImage(named: "check")
             cell.textLabel?.textColor = UIColor.gray
@@ -69,6 +82,39 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         table.reloadData()
     }
     
+    @IBAction func deleteAll(_ sender: AnyObject) {
+        let foundDeleted = UserDefaults.standard.object(forKey: "deleted")
+        var deletedList = [String]()
+        if let tempDeleted = foundDeleted as? [String] {
+            deletedList = tempDeleted
+            deletedList+=listArray
+        } else {
+            deletedList = listArray
+        }
+        
+        let foundDeletedStatus = UserDefaults.standard.object(forKey: "deletedStatus")
+        var deletedStatus = [Bool]()
+        if let tempDeletedStatus = foundDeletedStatus as? [Bool] {
+            deletedStatus = tempDeletedStatus
+            deletedStatus+=checked
+        } else {
+            deletedStatus = checked;
+        }
+        
+        UserDefaults.standard.set(deletedList, forKey: "deleted")
+        UserDefaults.standard.set(deletedStatus, forKey: "deletedStatus")
+        
+        
+        listArray = [String]();
+        checked = [Bool]();
+        UserDefaults.standard.set(listArray, forKey: "list")
+        UserDefaults.standard.set(listArray, forKey: "checked")
+        
+        table.reloadData()
+        
+    }
+    
+    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
             
@@ -97,6 +143,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
             listArray.remove(at: indexPath.row)
             checked.remove(at: indexPath.row)
             UserDefaults.standard.set(listArray, forKey: "list")
+            UserDefaults.standard.set(listArray, forKey: "checked")
             
             table.reloadData()
         }

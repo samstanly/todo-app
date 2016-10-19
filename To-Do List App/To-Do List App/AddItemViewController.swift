@@ -14,7 +14,7 @@ class AddItemViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var ItemTextField: UITextField!
     
     @IBAction func AddItem(_ sender: AnyObject) {
-            
+        
         let foundList = UserDefaults.standard.object(forKey: "list")
         let foundChecked = UserDefaults.standard.object(forKey: "checked")
         
@@ -40,6 +40,7 @@ class AddItemViewController: UIViewController, UITextFieldDelegate {
         UserDefaults.standard.set(listArray, forKey: "list")
         UserDefaults.standard.set(checked, forKey: "checked")
         ItemTextField.text = ""
+        _ = navigationController?.popViewController(animated: true)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

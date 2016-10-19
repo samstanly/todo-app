@@ -10,6 +10,15 @@ import UIKit
 
 class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    @IBAction func clearAll(_ sender: AnyObject) {
+        let listArray = [String]();
+        let checked = [Bool]();
+        UserDefaults.standard.set(listArray, forKey: "deleted")
+        UserDefaults.standard.set(checked, forKey: "deletedStatus")
+        viewWillAppear(true);
+    }
+    
+    
     @IBAction func restoreItem(_ sender: UIButton) {
         let foundActiveList = UserDefaults.standard.object(forKey: "list")
         var activeList = [String]()
