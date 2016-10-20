@@ -10,6 +10,15 @@ import UIKit
 
 class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    
+    @IBOutlet weak var historyTable: UITableView!
+    
+    var listArray:[String] = []
+    
+    var checked:[Bool] = []
+    
+    var timeDeleted:[NSDate] = []
+    
     @IBAction func restoreAll(_ sender: AnyObject) {
         let foundActiveList = UserDefaults.standard.object(forKey: "list")
         var activeList = [String]()
@@ -29,39 +38,33 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
             checkedActive = checked
         }
         
+        let foundTimeCompleted = UserDefaults.standard.object(forKey: "timeCompleted")
+        var timeCompleted = [NSDate]()
+        if let tempTimeCompleted = foundTimeCompleted as? [NSDate] {
+            timeCompleted = tempTimeCompleted
+        }
+        
+        for _ in 0...listArray.count-1 {
+            timeCompleted.append(NSDate.init())
+        }
+        
         UserDefaults.standard.set(activeList, forKey: "list")
         UserDefaults.standard.set(checkedActive, forKey: "checked")
+        UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
         
         
         listArray = [String]()
         checked = [Bool]()
+        timeDeleted = [NSDate]()
         
         UserDefaults.standard.set(listArray, forKey: "deleted")
         UserDefaults.standard.set(checked, forKey: "deletedStatus")
+        UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
         
         historyTable.reloadData()
     }
     
     @IBAction func clearAll(_ sender: AnyObject) {
-//        // Create the alert controller
-//        let alertController = UIAlertController(title: "Title", message: "Message", preferredStyle: .alert)
-//        
-//        // Create the actions
-//        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
-//            UIAlertAction in
-//            NSLog("OK Pressed")
-//        }
-//        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) {
-//            UIAlertAction in
-//            NSLog("Cancel Pressed")
-//        }
-//        
-//        // Add the actions
-//        alertController.addAction(okAction)
-//        alertController.addAction(cancelAction)
-//        
-//        // Present the controller
-//        self.present(alertController, animated: true, completion: nil)
         let alert = UIAlertController(title: "Are you sure?", message: "This will permanently clear this record of deleted items. This action cannot be undone.", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "No, cancel", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -69,10 +72,12 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         alert.addAction(UIAlertAction(title: "Yes, clear all", style: .default, handler: { action in
             switch action.style{
             case .default:
-                let listArray = [String]();
-                let checked = [Bool]();
+                let listArray = [String]()
+                let checked = [Bool]()
+                let timeDeleted = [NSDate]()
                 UserDefaults.standard.set(listArray, forKey: "deleted")
                 UserDefaults.standard.set(checked, forKey: "deletedStatus")
+                UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
                 self.viewWillAppear(true);
             case .cancel:
                 print("cancel")
@@ -104,25 +109,31 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
             checkedActive = [checked[sender.tag]]
         }
         
+        let foundTimeCompleted = UserDefaults.standard.object(forKey: "timeCompleted")
+        var timeCompleted = [NSDate]()
+        if let tempTimeCompleted = foundTimeCompleted as? [NSDate] {
+            timeCompleted = tempTimeCompleted
+            timeCompleted.append(NSDate.init())
+        } else {
+            timeCompleted = ([NSDate.init()])
+        }
+        
         UserDefaults.standard.set(activeList, forKey: "list")
         UserDefaults.standard.set(checkedActive, forKey: "checked")
-        
+        UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
         
         listArray.remove(at: sender.tag)
         checked.remove(at: sender.tag)
+        timeDeleted.remove(at: sender.tag)
         
         UserDefaults.standard.set(listArray, forKey: "deleted")
         UserDefaults.standard.set(checked, forKey: "deletedStatus")
+        UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
         
         historyTable.reloadData()
         
     }
 
-    @IBOutlet weak var historyTable: UITableView!
-    
-    var listArray:[String] = []
-    
-    var checked:[Bool] = []
     
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listArray.count
@@ -159,12 +170,41 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewWillAppear(_ animated: Bool) {
         let foundArray = UserDefaults.standard.object(forKey: "deleted")
         let foundChecked = UserDefaults.standard.object(forKey: "deletedStatus")
+        let foundTimeDeleted = UserDefaults.standard.object(forKey: "timeDeleted")
         if let tempList = foundArray as? [String] {
             listArray = tempList
         }
         
         if let tempChecked = foundChecked as? [Bool] {
             checked = tempChecked
+        }
+        
+        if let tempTimeDeleted = foundTimeDeleted as? [NSDate] {
+            timeDeleted = tempTimeDeleted
+        }
+        
+        var i = 0
+        while(true) {
+            if (i >= listArray.count) {
+                break
+            }
+            
+            print(listArray)
+            print(checked)
+            print(timeDeleted)
+            
+            if(timeDeleted[i].timeIntervalSinceNow < -86400) {
+                listArray.remove(at: i)
+                checked.remove(at: i)
+                timeDeleted.remove(at: i)
+                
+                UserDefaults.standard.set(listArray, forKey: "list")
+                UserDefaults.standard.set(checked, forKey: "checked")
+                UserDefaults.standard.set(timeDeleted, forKey: "timeCompleted")
+            } else {
+                i+=1
+            }
+            
         }
         
         historyTable.reloadData()

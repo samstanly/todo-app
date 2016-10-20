@@ -5,35 +5,10 @@
 //  Created by Sam Steady on 10/18/16.
 //  Copyright © 2016 Sam Steady. All rights reserved.
 
-//func resetChecks() {
-//    for i in 0.. < tableView.numberOfSections {
-//        for j in 0.. < tableView.numberOfRowsInSection(i) {
-//            if let cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: j, inSection: i)) {
-//                cell.accessoryType = .None
-//            }
-//        }
-//    }
-//}
-//
 
 import UIKit
 
 class ListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    @IBAction func checkAll(_ sender: AnyObject) {
-        for i in 0...listArray.count-1 {
-            checked[i] = true
-        }
-        UserDefaults.standard.set(checked, forKey: "checked")
-        viewWillAppear(true);
-    }
-    
-    @IBAction func uncheckAll(_ sender: AnyObject) {
-        for i in 0...listArray.count-1 {
-            checked[i] = false
-        }
-        UserDefaults.standard.set(checked, forKey: "checked")
-        viewWillAppear(true);
-    }
     
     @IBOutlet weak var deleteButton: UIBarButtonItem!
     @IBOutlet weak var table: UITableView!
@@ -41,10 +16,13 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     var listArray:[String] = []
     
     var checked:[Bool] = []
+    
+    var timeCompleted:[NSDate] = []
 
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listArray.count
     }
+
 
     
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -70,12 +48,34 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBAction func markAsComplete(_ sender: UIButton) {
         checked[sender.tag] = !checked[sender.tag]
-        print(checked[sender.tag])
+        timeCompleted[sender.tag] = NSDate.init()
         UserDefaults.standard.set(checked, forKey: "checked")
+        UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
         table.reloadData()
         viewWillAppear(true)
         
     }
+    
+    @IBAction func checkAll(_ sender: AnyObject) {
+        if (listArray.count > 0) {
+            for i in 0...listArray.count-1 {
+                checked[i] = true
+            }
+            UserDefaults.standard.set(checked, forKey: "checked")
+            viewWillAppear(true);
+        }
+    }
+    
+    @IBAction func uncheckAll(_ sender: AnyObject) {
+        if (listArray.count > 0) {
+            for i in 0...listArray.count-1 {
+                checked[i] = false
+            }
+            UserDefaults.standard.set(checked, forKey: "checked")
+            viewWillAppear(true);
+        }
+    }
+
 
     
     override func viewDidLoad() {
@@ -86,13 +86,39 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         let foundArray = UserDefaults.standard.object(forKey: "list")
         let foundChecked = UserDefaults.standard.object(forKey: "checked")
+        let foundTime = UserDefaults.standard.object(forKey: "timeCompleted")
         if let tempList = foundArray as? [String] {
             listArray = tempList
         }
         
         if let tempChecked = foundChecked as? [Bool] {
             checked = tempChecked
+            
         }
+        if let tempFoundTime = foundTime as? [NSDate] {
+            timeCompleted = tempFoundTime
+        }
+        
+        var i = 0
+        while(true) {
+            if (i >= listArray.count) {
+                break
+            }
+            
+            if(checked[i] && timeCompleted[i].timeIntervalSinceNow < -86400) {
+                listArray.remove(at: i)
+                checked.remove(at: i)
+                timeCompleted.remove(at: i)
+                
+                UserDefaults.standard.set(listArray, forKey: "list")
+                UserDefaults.standard.set(checked, forKey: "checked")
+                UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
+            } else {
+                i+=1
+            }
+            
+        }
+
         
         table.reloadData()
     }
@@ -115,15 +141,26 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             deletedStatus = checked;
         }
+        let foundTimeDeleted = UserDefaults.standard.object(forKey: "timeDeleted")
+        var timeDeleted = [NSDate]()
+        if let tempTimeDeleted = foundTimeDeleted as? [NSDate] {
+            timeDeleted = tempTimeDeleted
+        }
+        for _ in 0...listArray.count-1 {
+            timeDeleted.append(NSDate.init())
+        }
         
         UserDefaults.standard.set(deletedList, forKey: "deleted")
         UserDefaults.standard.set(deletedStatus, forKey: "deletedStatus")
+        UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
         
+        listArray = [String]()
+        checked = [Bool]()
+        timeCompleted = [NSDate]()
         
-        listArray = [String]();
-        checked = [Bool]();
         UserDefaults.standard.set(listArray, forKey: "list")
-        UserDefaults.standard.set(listArray, forKey: "checked")
+        UserDefaults.standard.set(checked, forKey: "checked")
+        UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
         
         table.reloadData()
         
@@ -151,14 +188,27 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
                 deletedStatus = [checked[indexPath.row]]
             }
             
+            let foundTimeDeleted = UserDefaults.standard.object(forKey: "timeDeleted")
+            var timeDeleted = [NSDate]()
+            if let tempTimeDeleted = foundTimeDeleted as? [NSDate] {
+                timeDeleted = tempTimeDeleted
+                timeDeleted.append(NSDate.init())
+            } else {
+                timeDeleted = [NSDate.init()]
+            }
+            
             UserDefaults.standard.set(deletedList, forKey: "deleted")
             UserDefaults.standard.set(deletedStatus, forKey: "deletedStatus")
+            UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
 
             
             listArray.remove(at: indexPath.row)
             checked.remove(at: indexPath.row)
+            timeCompleted.remove(at: indexPath.row)
+            
             UserDefaults.standard.set(listArray, forKey: "list")
-            UserDefaults.standard.set(listArray, forKey: "checked")
+            UserDefaults.standard.set(checked, forKey: "checked")
+            UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
             
             table.reloadData()
         }

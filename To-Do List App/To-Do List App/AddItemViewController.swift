@@ -23,9 +23,11 @@ class AddItemViewController: UIViewController, UITextFieldDelegate {
         
         let foundList = UserDefaults.standard.object(forKey: "list")
         let foundChecked = UserDefaults.standard.object(forKey: "checked")
+        let foundTimeCompleted = UserDefaults.standard.object(forKey: "timeCompleted")
         
         var listArray:[String]
         var checked:[Bool]
+        var timeCompleted:[NSDate]
         
         if let tempArray = foundList as? [String] {
             listArray = tempArray
@@ -40,11 +42,19 @@ class AddItemViewController: UIViewController, UITextFieldDelegate {
         } else {
             checked = ([false])
         }
+        
+        if let tempFoundTimeCompleted = foundTimeCompleted as? [NSDate] {
+            timeCompleted = tempFoundTimeCompleted
+            timeCompleted.append(NSDate.init())
+        } else {
+            timeCompleted = ([NSDate.init()])
+        }
 
         
         
         UserDefaults.standard.set(listArray, forKey: "list")
         UserDefaults.standard.set(checked, forKey: "checked")
+        UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
         ItemTextField.text = ""
         _ = navigationController?.popViewController(animated: true)
     }
