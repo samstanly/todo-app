@@ -124,45 +124,47 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @IBAction func deleteAll(_ sender: AnyObject) {
-        let foundDeleted = UserDefaults.standard.object(forKey: "deleted")
-        var deletedList = [String]()
-        if let tempDeleted = foundDeleted as? [String] {
-            deletedList = tempDeleted
-            deletedList+=listArray
-        } else {
-            deletedList = listArray
+        if (listArray.count > 0) {
+            let foundDeleted = UserDefaults.standard.object(forKey: "deleted")
+            var deletedList = [String]()
+            if let tempDeleted = foundDeleted as? [String] {
+                deletedList = tempDeleted
+                deletedList+=listArray
+            } else {
+                deletedList = listArray
+            }
+            
+            let foundDeletedStatus = UserDefaults.standard.object(forKey: "deletedStatus")
+            var deletedStatus = [Bool]()
+            if let tempDeletedStatus = foundDeletedStatus as? [Bool] {
+                deletedStatus = tempDeletedStatus
+                deletedStatus+=checked
+            } else {
+                deletedStatus = checked;
+            }
+            let foundTimeDeleted = UserDefaults.standard.object(forKey: "timeDeleted")
+            var timeDeleted = [NSDate]()
+            if let tempTimeDeleted = foundTimeDeleted as? [NSDate] {
+                timeDeleted = tempTimeDeleted
+            }
+            for _ in 0...listArray.count-1 {
+                timeDeleted.append(NSDate.init())
+            }
+            
+            UserDefaults.standard.set(deletedList, forKey: "deleted")
+            UserDefaults.standard.set(deletedStatus, forKey: "deletedStatus")
+            UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
+            
+            listArray = [String]()
+            checked = [Bool]()
+            timeCompleted = [NSDate]()
+            
+            UserDefaults.standard.set(listArray, forKey: "list")
+            UserDefaults.standard.set(checked, forKey: "checked")
+            UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
+            
+            table.reloadData()
         }
-        
-        let foundDeletedStatus = UserDefaults.standard.object(forKey: "deletedStatus")
-        var deletedStatus = [Bool]()
-        if let tempDeletedStatus = foundDeletedStatus as? [Bool] {
-            deletedStatus = tempDeletedStatus
-            deletedStatus+=checked
-        } else {
-            deletedStatus = checked;
-        }
-        let foundTimeDeleted = UserDefaults.standard.object(forKey: "timeDeleted")
-        var timeDeleted = [NSDate]()
-        if let tempTimeDeleted = foundTimeDeleted as? [NSDate] {
-            timeDeleted = tempTimeDeleted
-        }
-        for _ in 0...listArray.count-1 {
-            timeDeleted.append(NSDate.init())
-        }
-        
-        UserDefaults.standard.set(deletedList, forKey: "deleted")
-        UserDefaults.standard.set(deletedStatus, forKey: "deletedStatus")
-        UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
-        
-        listArray = [String]()
-        checked = [Bool]()
-        timeCompleted = [NSDate]()
-        
-        UserDefaults.standard.set(listArray, forKey: "list")
-        UserDefaults.standard.set(checked, forKey: "checked")
-        UserDefaults.standard.set(timeCompleted, forKey: "timeCompleted")
-        
-        table.reloadData()
         
     }
     

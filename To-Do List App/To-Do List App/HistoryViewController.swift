@@ -67,27 +67,29 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @IBAction func clearAll(_ sender: AnyObject) {
-        let alert = UIAlertController(title: "Are you sure?", message: "This will permanently clear this record of deleted items. This action cannot be undone.", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "No, cancel", style: UIAlertActionStyle.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-        
-        alert.addAction(UIAlertAction(title: "Yes, clear all", style: .default, handler: { action in
-            switch action.style{
-            case .default:
-                let listArray = [String]()
-                let checked = [Bool]()
-                let timeDeleted = [NSDate]()
-                UserDefaults.standard.set(listArray, forKey: "deleted")
-                UserDefaults.standard.set(checked, forKey: "deletedStatus")
-                UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
-                self.viewWillAppear(true);
-            case .cancel:
-                print("cancel")
-                
-            case .destructive:
-                print("destructive")
-            }
-        }))
+        if (listArray.count > 0) {
+            let alert = UIAlertController(title: "Are you sure?", message: "This will permanently clear this record of deleted items. This action cannot be undone.", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "No, cancel", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
+            alert.addAction(UIAlertAction(title: "Yes, clear all", style: .default, handler: { action in
+                switch action.style{
+                case .default:
+                    let listArray = [String]()
+                    let checked = [Bool]()
+                    let timeDeleted = [NSDate]()
+                    UserDefaults.standard.set(listArray, forKey: "deleted")
+                    UserDefaults.standard.set(checked, forKey: "deletedStatus")
+                    UserDefaults.standard.set(timeDeleted, forKey: "timeDeleted")
+                    self.viewWillAppear(true);
+                case .cancel:
+                    print("cancel")
+                    
+                case .destructive:
+                    print("destructive")
+                }
+            }))
+        }
     }
     
     
