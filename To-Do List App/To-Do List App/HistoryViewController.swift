@@ -9,6 +9,37 @@
 import UIKit
 
 class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    @IBAction func restoreAll(_ sender: AnyObject) {
+        let foundActiveList = UserDefaults.standard.object(forKey: "list")
+        var activeList = [String]()
+        if let tempActiveList = foundActiveList as? [String] {
+            activeList = tempActiveList
+            activeList+=listArray
+        } else {
+            activeList = listArray
+        }
+        
+        let foundActiveStatus = UserDefaults.standard.object(forKey: "checked")
+        var checkedActive = [Bool]()
+        if let tempCheckedActive = foundActiveStatus as? [Bool] {
+            checkedActive = tempCheckedActive
+            checkedActive+=checked
+        } else {
+            checkedActive = checked
+        }
+        
+        UserDefaults.standard.set(activeList, forKey: "list")
+        UserDefaults.standard.set(checkedActive, forKey: "checked")
+        
+        
+        listArray = [String]()
+        checked = [Bool]()
+        
+        UserDefaults.standard.set(listArray, forKey: "deleted")
+        UserDefaults.standard.set(checked, forKey: "deletedStatus")
+        
+        historyTable.reloadData()
+    }
     
     @IBAction func clearAll(_ sender: AnyObject) {
         let listArray = [String]();
@@ -59,12 +90,10 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     var checked:[Bool] = []
     
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("CHECKING COUNT")
         return listArray.count
     }
     
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("making cell")
         let cell = self.historyTable.dequeueReusableCell(withIdentifier: "CellDeleted", for: indexPath) as! TableViewCell
         
         cell.textLabel?.text = listArray[indexPath.row]
@@ -102,8 +131,6 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let tempChecked = foundChecked as? [Bool] {
             checked = tempChecked
         }
-        
-        print(listArray)
         
         historyTable.reloadData()
     }

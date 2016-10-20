@@ -100,14 +100,22 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="History" id="6C1-kw-h0t">
-                        <barButtonItem key="rightBarButtonItem" title="Clear All" id="8Cx-vR-aqP">
+                    <toolbarItems>
+                        <barButtonItem title="Clear All" id="8Cx-vR-aqP">
                             <color key="tintColor" red="0.72336632010000002" green="0.0" blue="0.027074908929999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="clearAll:" destination="ffg-Zg-64a" id="jOl-fR-z23"/>
                             </connections>
                         </barButtonItem>
-                    </navigationItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="HSm-tt-fyY"/>
+                        <barButtonItem title="Restore All" id="IwG-4j-5Jn">
+                            <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="restoreAll:" destination="ffg-Zg-64a" id="KFB-4O-bvV"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="History" id="6C1-kw-h0t"/>
                     <connections>
                         <outlet property="historyTable" destination="zxa-Th-ffY" id="NzD-8N-rUf"/>
                     </connections>
@@ -149,7 +157,7 @@
                         <viewControllerLayoutGuide type="top" id="A8Z-ma-ed8"/>
                         <viewControllerLayoutGuide type="bottom" id="7Do-9Z-Clj"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" misplaced="YES" id="unR-gt-cDF">
+                    <view key="view" contentMode="scaleToFill" id="unR-gt-cDF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -199,13 +207,33 @@
                                 <action selector="deleteAll:" destination="J4c-xB-Ess" id="6Du-2H-gbd"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="xoi-Rt-01L"/>
+                        <barButtonItem title="Uncheck All" id="TGD-Uh-Iyp">
+                            <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="uncheckAll:" destination="J4c-xB-Ess" id="yy9-Te-yxg"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="oSp-hW-RDP"/>
+                        <barButtonItem title="Check All" id="UGl-05-hpC">
+                            <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="checkAll:" destination="J4c-xB-Ess" id="4yt-bv-WXr"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="E3H-IO-Qcj">
+                        <nil key="title"/>
                         <barButtonItem key="leftBarButtonItem" title="HIstory" id="QOt-ip-mCO">
                             <connections>
                                 <segue destination="ffg-Zg-64a" kind="show" id="Zkj-2v-wY5"/>
                             </connections>
                         </barButtonItem>
+                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="EZE-nc-LOX">
+                            <rect key="frame" x="113" y="7" width="150" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <state key="normal" title="Stats"/>
+                        </button>
                         <barButtonItem key="rightBarButtonItem" title="New" id="aay-Yj-hiX">
                             <connections>
                                 <segue destination="bXA-lw-S8d" kind="show" id="FBQ-Zd-xEx"/>

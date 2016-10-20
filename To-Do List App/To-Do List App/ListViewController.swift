@@ -19,6 +19,21 @@
 import UIKit
 
 class ListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    @IBAction func checkAll(_ sender: AnyObject) {
+        for i in 0...listArray.count-1 {
+            checked[i] = true
+        }
+        UserDefaults.standard.set(checked, forKey: "checked")
+        viewWillAppear(true);
+    }
+    
+    @IBAction func uncheckAll(_ sender: AnyObject) {
+        for i in 0...listArray.count-1 {
+            checked[i] = false
+        }
+        UserDefaults.standard.set(checked, forKey: "checked")
+        viewWillAppear(true);
+    }
     
     @IBOutlet weak var deleteButton: UIBarButtonItem!
     @IBOutlet weak var table: UITableView!
