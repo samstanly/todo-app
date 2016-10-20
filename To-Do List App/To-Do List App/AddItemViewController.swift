@@ -14,6 +14,12 @@ class AddItemViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var ItemTextField: UITextField!
     
     @IBAction func AddItem(_ sender: AnyObject) {
+        if(ItemTextField.text! == "") {
+            let alert = UIAlertController(title: "No item name", message: "Please provide a valid, non-empty name for this item", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
         
         let foundList = UserDefaults.standard.object(forKey: "list")
         let foundChecked = UserDefaults.standard.object(forKey: "checked")

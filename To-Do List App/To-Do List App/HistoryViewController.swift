@@ -9,6 +9,7 @@
 import UIKit
 
 class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
     @IBAction func restoreAll(_ sender: AnyObject) {
         let foundActiveList = UserDefaults.standard.object(forKey: "list")
         var activeList = [String]()
@@ -42,12 +43,46 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @IBAction func clearAll(_ sender: AnyObject) {
-        let listArray = [String]();
-        let checked = [Bool]();
-        UserDefaults.standard.set(listArray, forKey: "deleted")
-        UserDefaults.standard.set(checked, forKey: "deletedStatus")
-        viewWillAppear(true);
+//        // Create the alert controller
+//        let alertController = UIAlertController(title: "Title", message: "Message", preferredStyle: .alert)
+//        
+//        // Create the actions
+//        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
+//            UIAlertAction in
+//            NSLog("OK Pressed")
+//        }
+//        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) {
+//            UIAlertAction in
+//            NSLog("Cancel Pressed")
+//        }
+//        
+//        // Add the actions
+//        alertController.addAction(okAction)
+//        alertController.addAction(cancelAction)
+//        
+//        // Present the controller
+//        self.present(alertController, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Are you sure?", message: "This will permanently clear this record of deleted items. This action cannot be undone.", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "No, cancel", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        
+        alert.addAction(UIAlertAction(title: "Yes, clear all", style: .default, handler: { action in
+            switch action.style{
+            case .default:
+                let listArray = [String]();
+                let checked = [Bool]();
+                UserDefaults.standard.set(listArray, forKey: "deleted")
+                UserDefaults.standard.set(checked, forKey: "deletedStatus")
+                self.viewWillAppear(true);
+            case .cancel:
+                print("cancel")
+                
+            case .destructive:
+                print("destructive")
+            }
+        }))
     }
+    
     
     
     @IBAction func restoreItem(_ sender: UIButton) {
